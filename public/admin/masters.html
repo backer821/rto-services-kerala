@@ -1,0 +1,456 @@
+<!-- ========================================
+     FILE: public/admin/masters.html
+     ======================================== -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Data Management - RTO Services</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>RTO Services</h2>
+                <p id="userRole">Admin</p>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="masters.html" class="active">Master Data</a></li>
+                <li><a href="users.html">User Management</a></li>
+                <li><a href="reports.html">Reports</a></li>
+                <li><a href="#" id="logoutBtn">Logout</a></li>
+            </ul>
+        </nav>
+        
+        <main class="main-content">
+            <header class="content-header">
+                <h1>Master Data Management</h1>
+                <button onclick="showAddMasterModal()" class="btn-primary">Add New</button>
+            </header>
+            
+            <div class="content-section">
+                <div id="masterTabs" style="display:flex;gap:1rem;margin-bottom:2rem;flex-wrap:wrap"></div>
+                
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Name/Service</th>
+                            <th>Description</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="masterTableBody">
+                        <tr><td colspan="4" style="text-align:center">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- Master Modal -->
+    <div id="masterModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="masterModalTitle">Add Master</h2>
+                <span class="modal-close" onclick="closeMasterModal()">&times;</span>
+            </div>
+            <form id="masterForm" onsubmit="saveMaster(event)">
+                <input type="hidden" id="masterId">
+                <div id="masterFormFields"></div>
+                <div style="margin-top:2rem;display:flex;gap:1rem">
+                    <button type="submit" class="btn-primary">Save</button>
+                    <button type="button" onclick="closeMasterModal()" class="btn-secondary">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="../../js/config.js"></script>
+    <script src="../../js/admin.js"></script>
+</body>
+</html>
+
+<!-- ========================================
+     FILE: public/admin/users.html
+     ======================================== -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - RTO Services</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>RTO Services</h2>
+                <p id="userRole">Admin</p>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="masters.html">Master Data</a></li>
+                <li><a href="users.html" class="active">User Management</a></li>
+                <li><a href="reports.html">Reports</a></li>
+                <li><a href="#" id="logoutBtn">Logout</a></li>
+            </ul>
+        </nav>
+        
+        <main class="main-content">
+            <header class="content-header">
+                <h1>User Management</h1>
+            </header>
+            
+            <div class="content-section">
+                <h2>Create New User</h2>
+                <form id="userForm" onsubmit="createUser(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Full Name *</label>
+                            <input type="text" id="userName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email *</label>
+                            <input type="email" id="userEmail" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Password *</label>
+                            <input type="password" id="userPassword" required minlength="6">
+                        </div>
+                        <div class="form-group">
+                            <label>Role *</label>
+                            <select id="userRole" required>
+                                <option value="">Select Role</option>
+                                <option value="admin">Admin</option>
+                                <option value="staff">Staff</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Branch *</label>
+                        <select id="branchSelect" required>
+                            <option value="">Select Branch</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-primary">Create User</button>
+                </form>
+            </div>
+            
+            <div class="content-section" style="margin-top:2rem">
+                <h2>Users List</h2>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Branch</th>
+                            <th>Last Login</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        <tr><td colspan="6" style="text-align:center">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="../../js/config.js"></script>
+    <script src="../../js/admin.js"></script>
+</body>
+</html>
+
+<!-- ========================================
+     FILE: public/staff/vehicle-service.html
+     ======================================== -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Service - RTO Services</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>RTO Services</h2>
+                <p id="branchName">Branch Name</p>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="vehicle-service.html" class="active">Vehicle Service</a></li>
+                <li><a href="registration.html">Registration</a></li>
+                <li><a href="fancy-number.html">Fancy Numbers</a></li>
+                <li><a href="cash-register.html">Cash Register</a></li>
+                <li><a href="reports.html">Reports</a></li>
+                <li><a href="#" id="changePasswordBtn">Change Password</a></li>
+                <li><a href="#" id="logoutBtn">Logout</a></li>
+            </ul>
+        </nav>
+        
+        <main class="main-content">
+            <header class="content-header">
+                <h1>Vehicle Service Application</h1>
+            </header>
+            
+            <div class="content-section">
+                <h2>New Application Entry</h2>
+                <form id="applicationForm" onsubmit="saveApplication(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Vehicle Number *</label>
+                            <input type="text" id="vehicleNumber" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Chassis No *</label>
+                            <input type="text" id="chassisNo" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Date *</label>
+                            <input type="date" id="date" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Application No *</label>
+                            <input type="text" id="applicationNo" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Agent *</label>
+                            <select id="agentId" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Contact No</label>
+                            <input type="tel" id="contactNo">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>MVD Office *</label>
+                            <select id="mvdOfficeId" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Vehicle Class *</label>
+                            <select id="vehicleClassId" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Application Status *</label>
+                            <select id="statusId" required></select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>RTO Service *</label>
+                            <select id="rtoServiceId" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label>TV/NTV *</label>
+                            <select id="tvNtv" required>
+                                <option value="">Select</option>
+                                <option value="TV">TV (Transport Vehicle)</option>
+                                <option value="NTV">NTV (Non-Transport)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div id="tvFields" style="display:none">
+                        <h3 style="margin:1.5rem 0 1rem">TV Details</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>CF Expiry Date</label>
+                                <input type="date" id="cfExpiryDate">
+                            </div>
+                            <div class="form-group">
+                                <label>Tax Expiry Date</label>
+                                <input type="date" id="taxExpDate">
+                            </div>
+                            <div class="form-group">
+                                <label>Permit Expiry Date</label>
+                                <input type="date" id="permitExpDate">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h3 style="margin:1.5rem 0 1rem">Payment Details</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Service Fee</label>
+                            <input type="number" id="serviceFee" step="0.01" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Advance</label>
+                            <input type="number" id="advance" step="0.01" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Vahan Fee</label>
+                            <input type="number" id="vahanFee" step="0.01" min="0">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Office Expense</label>
+                            <input type="number" id="officeExp" step="0.01" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Payment Mode</label>
+                            <select id="paymentMode"></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Payment Date</label>
+                            <input type="date" id="paymentDate">
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">Save Application</button>
+                </form>
+            </div>
+            
+            <div class="content-section" style="margin-top:2rem">
+                <h2>Recent Applications</h2>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Vehicle No</th>
+                            <th>App No</th>
+                            <th>Date</th>
+                            <th>Agent</th>
+                            <th>Status</th>
+                            <th>Service</th>
+                            <th>Fee</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="applicationsTableBody">
+                        <tr><td colspan="8" style="text-align:center">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="../../js/config.js"></script>
+    <script src="../../js/staff.js"></script>
+</body>
+</html>
+
+<!-- ========================================
+     FILE: public/staff/registration.html
+     ======================================== -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Registration - RTO Services</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>RTO Services</h2>
+                <p id="branchName">Branch Name</p>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="vehicle-service.html">Vehicle Service</a></li>
+                <li><a href="registration.html" class="active">Registration</a></li>
+                <li><a href="fancy-number.html">Fancy Numbers</a></li>
+                <li><a href="cash-register.html">Cash Register</a></li>
+                <li><a href="reports.html">Reports</a></li>
+                <li><a href="#" id="changePasswordBtn">Change Password</a></li>
+                <li><a href="#" id="logoutBtn">Logout</a></li>
+            </ul>
+        </nav>
+        
+        <main class="main-content">
+            <header class="content-header">
+                <h1>Vehicle Registration Number</h1>
+            </header>
+            
+            <div class="content-section">
+                <h2>New Registration Entry</h2>
+                <form id="registrationForm" onsubmit="saveRegistration(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Application Number *</label>
+                            <input type="text" id="applicationNumber" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Vehicle Type *</label>
+                            <input type="text" id="vehicleType" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Contact Number</label>
+                            <input type="tel" id="contactNumber">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="isAllotted">
+                            <label for="isAllotted">Number Already Allotted</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Allotted Number (if applicable)</label>
+                        <input type="text" id="allottedNumber">
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">Save Registration</button>
+                </form>
+            </div>
+            
+            <div class="content-section" style="margin-top:2rem">
+                <h2>Registrations List</h2>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>App Number</th>
+                            <th>Vehicle Type</th>
+                            <th>Allotted Number</th>
+                            <th>Allotted?</th>
+                            <th>Contact</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="registrationsTableBody">
+                        <tr><td colspan="6" style="text-align:center">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="../../js/config.js"></script>
+    <script src="../../js/staff.js"></script>
+</body>
+</html>

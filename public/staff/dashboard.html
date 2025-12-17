@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard - RTO Services</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>RTO Services</h2>
+                <p id="branchName">Branch Name</p>
+                <p id="userRole">Staff</p>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="dashboard.html" class="active">Dashboard</a></li>
+                <li><a href="vehicle-service.html">Vehicle Service</a></li>
+                <li><a href="registration.html">Registration</a></li>
+                <li><a href="fancy-number.html">Fancy Numbers</a></li>
+                <li><a href="cash-register.html">Cash Register</a></li>
+                <li><a href="reports.html">Reports</a></li>
+                <li><a href="#" id="changePasswordBtn">Change Password</a></li>
+                <li><a href="#" id="logoutBtn">Logout</a></li>
+            </ul>
+        </nav>
+        
+        <main class="main-content">
+            <header class="content-header">
+                <h1>Staff Dashboard</h1>
+                <div class="user-info">
+                    <span id="userName">Welcome</span>
+                </div>
+            </header>
+            
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <h3>Today's Applications</h3>
+                    <p class="stat-number" id="todayApps">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Pending Registrations</h3>
+                    <p class="stat-number" id="pendingRegs">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Cash Collected Today</h3>
+                    <p class="stat-number" id="todayCash">₹0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Fancy Numbers</h3>
+                    <p class="stat-number" id="fancyCount">0</p>
+                </div>
+            </div>
+            
+            <div class="content-section">
+                <h2>Quick Actions</h2>
+                <div class="action-buttons">
+                    <a href="vehicle-service.html" class="btn-primary">New Application</a>
+                    <a href="registration.html" class="btn-secondary">Add Registration</a>
+                    <a href="cash-register.html" class="btn-secondary">Record Payment</a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="../../js/config.js"></script>
+    <script src="../../js/staff.js"></script>
+</body>
+</html>
